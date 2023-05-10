@@ -1,0 +1,83 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+
+typedef struct vozidlo {
+	char znacka[20];
+	char model[20];
+	char spz[10];
+	float spotreba;
+	struct vozidlo* dalsi;
+}tVozidlo;
+
+void vypisPobocky(char* jmSoub) {
+	FILE* input = fopen("data.csv", "r");
+	FILE* output = fopen(jmSoub, "w");
+
+	char line[200];
+	while (fgets(line, 200, input) != NULL) {
+		if (line[0] == 'P' && isupper(line[0])) {
+			memmove(line, line + 2, strlen(line) - 1);
+			fputs(line, output);
+		}
+
+	}
+}
+
+tVozidlo* nactiSeznam(char* jmSoub, char* jmPobocky) {
+	tVozidlo* prvni = NULL;  // Ukazatel na první prvek seznamu
+	tVozidlo* aktualni = NULL;  // Ukazatel na aktuální prvek
+
+	FILE* input = fopen(jmSoub, "r");
+	char line[200];
+	char pobocka[50] = "P;";
+
+	while (fgets(line, 200, input) != NULL) {
+		strcat(pobocka, jmPobocky);
+		if (line == pobocka) {
+			fgets(line, 200, input);
+			while (line[0] != 'P') {
+				tVozidlo* vozidlo = (tVozidlo*)malloc(sizeof(tVozidlo));
+				char* token = strtok(line, ";");
+				strcpy(vozidlo->znacka, token);
+
+				token = strtok(line, ";");
+				strcpy(vozidlo->model, token);
+
+				token = strtok(line, ";");
+				strcpy(vozidlo->spz, token);
+
+				token = strtok(line, ";");
+				vozidlo->spotreba = atoi(token);
+
+				if (prvni == NULL) {
+					prvni = vozidlo;
+				}
+				else {
+					aktualni = prvni;
+					while (aktualni->dalsi != NULL) {
+						aktualni = aktualni->dalsi;
+					}
+					aktualni->dalsi = vozidlo;
+				}
+
+				fgets(line, 200, input);
+			}
+		}
+	}
+	return prvni;
+}
+
+int main() {
+	vypisPobocky("nazvyPobocek.txt");
+
+	tVozidlo* prvni = nactiSeznam("data.csv", "pobocka 4");
+	tVozidlo* aktualni = prvni;
+	while (aktualni->dalsi != NULL) {
+		printf("%s", aktualni->model);
+		aktualni = aktualni->dalsi;
+	}
+
+	return 0;
+}
