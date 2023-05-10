@@ -1,0 +1,19 @@
+typedef struct vozidlo{
+char znacka[20];
+char model[20];
+char spz[10];
+float spotreba;
+struct vozidlo dalsi;
+}tVozidlo;
+
+Dále vytvořte následující funkce:
+1) void vypisPobocky (charjmSoub) - vypíše názvy poboček v textovém souboru
+2) tVozidlo nactiSeznam(charjmSoub, char jmPobocky) - načte a vrátí lineární seznam aut z vybrané pobočky (název je vstupní parametr)
+3) void ulozNadPrumer(tVozidloseznamAut) - uloží do souboru všechna auta, které mají nadprůměrnou spotřebu
+
+Hlavní program(funkce main) volá výše uvedené funkce v pořadí:
+1) vypisPobocky
+2) nactiSeznam
+3)ulozNadPrumer
+
+Globální proměnné nejsou přípustné 
